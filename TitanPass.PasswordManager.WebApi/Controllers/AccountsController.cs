@@ -11,5 +11,6 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
     [ApiController]
     public class AccountsController : ControllerBase
     {
+        
     }
 }
