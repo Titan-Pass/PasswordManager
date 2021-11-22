@@ -46,11 +46,6 @@ namespace TitanPass.PasswordManager.WebApi
                     builder.AddConsole();
                 }
             );
-            
-            services.AddDbContext<PasswordManagerDbContext>(builder =>
-            {
-                
-            } )
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
