@@ -8,6 +8,8 @@ namespace TitanPass.PasswordManager.Domain.IRepositories
         Account GetAccountById(int id);
 
         List<Account> GetAllAccounts();
+        
+        List<Account> GetAccountsFromCustomer(int id);
 
         Account CreateAccount(Account account);
 

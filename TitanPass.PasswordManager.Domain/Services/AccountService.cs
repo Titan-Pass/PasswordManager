@@ -32,6 +32,11 @@ namespace TitanPass.PasswordManager.Domain.Services
             return _accountRepository.GetAllAccounts();
         }
 
+        public List<Account> GetAccountsFromCustomer(int id)
+        {
+            return _accountRepository.GetAccountsFromCustomer(id);
+        }
+
         public Account CreateAccount(Account account)
         {
             return _accountRepository.CreateAccount(account);
