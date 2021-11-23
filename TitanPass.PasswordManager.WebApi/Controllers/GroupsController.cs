@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TitanPass.PasswordManager.Core.IServices;
+using TitanPass.PasswordManager.Core.Models;
+using TitanPass.PasswordManager.WebApi.Dtos;
 using Group = TitanPass.PasswordManager.Core.Models.Group;
 
 namespace TitanPass.PasswordManager.WebApi.Controllers
@@ -25,7 +27,21 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         {
             return _groupService.DeleteGroup(id);
         }
-        
-        
+
+        [HttpPut("{id:int}")]
+        public ActionResult<GroupDto> UpdateCustomer(int id, GroupDto dto)
+        {
+            if (id != dto.Id)
+            {
+                return BadRequest("It is not a match");
+            }
+
+            var group = _groupService.UpdateGroup(new Group
+            {
+                Id = dto.Id,
+                Name = dto.Name
+            });
+            return Ok(dto);
+        }
     }
 }
