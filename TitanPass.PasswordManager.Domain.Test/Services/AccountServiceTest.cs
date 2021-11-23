@@ -14,6 +14,7 @@ namespace TitanPass.PasswordManager.Domain.Test.Services
     {
         #region AccountService init
         
+        [Fact]
         public void AccountService_IsIAccountService()
         {
             var repoMock = new Mock<IAccountRepository>();

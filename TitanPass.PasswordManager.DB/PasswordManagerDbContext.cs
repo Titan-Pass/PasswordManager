@@ -7,6 +7,10 @@ namespace TitanPass.PasswordManager.DB
     {
         public DbSet<AccountEntity> Accounts { get; set; }
         
+        public DbSet<CustomerEntity> Customers { get; set; }
+        
+        public DbSet<GroupEntity> Groups { get; set; }
+
         public PasswordManagerDbContext(DbContextOptions<PasswordManagerDbContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
