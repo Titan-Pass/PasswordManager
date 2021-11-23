@@ -2,6 +2,7 @@
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using TitanPass.PasswordManager.Core.Models;
+using TitanPass.PasswordManager.DB.Entities;
 using TitanPass.PasswordManager.Domain.IRepositories;
 
 namespace TitanPass.PasswordManager.DB.Repositories
@@ -41,7 +42,15 @@ namespace TitanPass.PasswordManager.DB.Repositories
 
         public Account DeleteAccount(int id)
         {
-            throw new System.NotImplementedException();
+            var entity = _ctx.Accounts.Remove(new AccountEntity {Id = id}).Entity;
+            _ctx.SaveChanges();
+            return new Account
+            {
+                Id = entity.Id,
+                Customer = entity.Customer,
+                Email = entity.Email,
+                Group = entity.Group
+            };
         }
 
         public Account UpdateAccount(Account account)
