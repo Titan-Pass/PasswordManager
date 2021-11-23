@@ -42,7 +42,19 @@ namespace TitanPass.PasswordManager.DB.Repositories
 
         public Customer UpdateCustomer(Customer customer)
         {
-            throw new System.NotImplementedException();
+            var entity = _ctx.Customers.Update(new CustomerEntity
+            {
+                Email = customer.Email,
+                Id = customer.Id
+            }).Entity;
+
+            _ctx.SaveChanges();
+
+            return new Customer
+            {
+                Email = entity.Email,
+                Id = entity.Id
+            };
         }
     }
 }

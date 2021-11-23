@@ -1,9 +1,8 @@
-﻿namespace TitanPass.PasswordManager.DB.Entities
+namespace TitanPass.PasswordManager.WebApi.Dtos
 {
-    public class GroupEntity
+    public class GroupDto
     {
         public int Id { get; set; }
-        
         public string Name { get; set; }
     }
 }

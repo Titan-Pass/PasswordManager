@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TitanPass.PasswordManager.Core.IServices;
 using TitanPass.PasswordManager.Core.Models;
+using TitanPass.PasswordManager.WebApi.Dtos;
 
 namespace TitanPass.PasswordManager.WebApi.Controllers
 {
@@ -24,6 +25,22 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         public Customer Delete(int id)
         {
             return _customerService.DeleteCustomer(id);
+        }
+        
+        [HttpPut("{id:int}")]
+        public ActionResult<CustomerDto> UpdateCustomer(int id, CustomerDto dto)
+        {
+            if (id != dto.Id)
+            {
+                return BadRequest("It is not a match");
+            }
+
+            var customer = _customerService.UpdateCustomer(new Customer
+            {
+                Id = dto.Id,
+                Email = dto.Email
+            });
+            return Ok(dto);
         }
     }
 }

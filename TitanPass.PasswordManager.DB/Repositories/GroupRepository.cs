@@ -35,13 +35,25 @@ namespace TitanPass.PasswordManager.DB.Repositories
             _ctx.SaveChanges();
             return new Group
             {
-                Id = entity.Id
+                Id = entity.Id,
+                Name = entity.Name
             };
         }
 
         public Group UpdateGroup(Group @group)
         {
-            throw new System.NotImplementedException();
+            var entity = _ctx.Groups.Update(new GroupEntity
+            {
+                Id = group.Id,
+                Name = group.Name
+            }).Entity;
+
+            _ctx.SaveChanges();
+            return new Group
+            {
+                Id = entity.Id,
+                Name = entity.Name
+            };
         }
     }
 }
