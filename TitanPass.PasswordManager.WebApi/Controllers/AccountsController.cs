@@ -20,7 +20,46 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         {
             _accountService = service;
         }
+        
+        //Get all accounts
+        [HttpGet]
+        public ActionResult<AccountDto> GetAllAccounts()
+        {
+            try
+            {
+                var accounts = _accountService.GetAllAccounts().Select(account => new AccountDto
+                {
+                    Id = account.Id,
+                    Email = account.Email
+                }).ToList();
 
+                return Ok(new AccountsDto
+                {
+                    List = accounts
+                });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        //Get single account by Id
+        [HttpGet("{id}")]
+        public ActionResult<AccountDto> GetAccount(int id)
+        {
+            var account = _accountService.GetAccountById(id);
+            return Ok(new AccountDto
+            {
+                Email = account.Email,
+                Id = account.Id
+            });
+        }
+
+        
+        
+        
+        
         [HttpDelete("{id}")]
         public Account Delete(int id)
         {
