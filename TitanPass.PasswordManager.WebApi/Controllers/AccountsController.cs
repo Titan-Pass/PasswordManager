@@ -55,10 +55,6 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                 Id = account.Id
             });
         }
-
-        
-        
-        
         
         [HttpDelete("{id}")]
         public Account Delete(int id)

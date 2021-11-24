@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using TitanPass.PasswordManager.Security.IServices;
@@ -42,6 +43,25 @@ namespace TitanPass.PasswordManager.Security.Services
             {
                 Message = "User or Password not correct"
             };
+        }
+
+        public bool Authenticate(string plainPassword, LoginCustomer customer)
+        {
+            if (customer == null || customer.HashedPassword.Length <= 0 || customer.Salt.Length <= 0) 
+                return false;
+
+            var hashedPasswordFromPlain = HashPassword(plainPassword, customer.Salt);
+            return customer.HashedPassword.Equals(hashedPasswordFromPlain);
+        }
+
+        public string HashPassword(string plainPassword, byte[] salt)
+        {
+            return Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: plainPassword,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA256,
+                iterationCount: 100000,
+                numBytesRequested: 256 / 8));
         }
     }
 }

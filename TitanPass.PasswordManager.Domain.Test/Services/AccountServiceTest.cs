@@ -65,6 +65,44 @@ namespace TitanPass.PasswordManager.Domain.Test.Services
         }
 
         #endregion
+
+        [Fact]
+        public void GetAccountById()
+        {
+            var expected = new Account
+            {
+                Id = 1,
+                Email = "test@mail.com",
+                Name = "test.com"
+            };
+
+            var repoMock = new Mock<IAccountRepository>();
+            repoMock.Setup(repository => repository.GetAccountById(expected.Id)).Returns(expected);
+            var accountService = new AccountService(repoMock.Object);
+            int id = 1;
+            
+            Assert.Equal(expected, accountService.GetAccountById(1), new AccountComparer());
+        }
+        
+        [Fact]
+        public void DeleteAccount()
+        {
+            var account = new Account
+            {
+                Id = 1,
+                Email = "test@mail.com",
+                Name = "test.com"
+            };
+
+            var repoMock = new Mock<IAccountRepository>();
+            repoMock.Setup(repository => repository.DeleteAccount(account.Id));
+
+            AccountService accountService = new AccountService(repoMock.Object);
+
+            accountService.DeleteAccount(account.Id);
+            
+            repoMock.Verify(repository => repository.DeleteAccount(account.Id));
+        }
     }
 
     public class AccountComparer : IEqualityComparer<Account>

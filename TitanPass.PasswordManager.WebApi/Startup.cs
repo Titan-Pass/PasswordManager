@@ -42,6 +42,8 @@ namespace TitanPass.PasswordManager.WebApi
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<ICustomerRepository, CustomerRepository>();
+            services.AddScoped<IGroupService, GroupService>();
+            services.AddScoped<IGroupRepository, GroupRepository>();
             
             var loggerFactory = LoggerFactory.Create(builder => {
                     builder.AddConsole();
