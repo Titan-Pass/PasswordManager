@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using TitanPass.PasswordManager.Core.Models;
 using TitanPass.PasswordManager.DB.Entities;
 using TitanPass.PasswordManager.Domain.IRepositories;
@@ -14,14 +15,33 @@ namespace TitanPass.PasswordManager.DB.Repositories
             _ctx = ctx;
         }
         
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         public Group GetGroupById(int id)
         {
-            throw new System.NotImplementedException();
+            return _ctx.Groups.Select(entity => new Group
+            {
+                Id = entity.Id,
+                Name = entity.Name
+            }).FirstOrDefault(group => group.Id == id);
         }
 
         public List<Group> GetAllGroups()
         {
-            throw new System.NotImplementedException();
+            return _ctx.Groups.Select(entity => new Group
+            {
+                Id = entity.Id,
+                Name = entity.Name
+            }).ToList();
         }
 
         public Group CreateGroup(Group @group)

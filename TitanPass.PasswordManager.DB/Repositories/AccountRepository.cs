@@ -35,6 +35,59 @@ namespace TitanPass.PasswordManager.DB.Repositories
             throw new System.NotImplementedException();
         }
 
+
+
+
+
+        //Read all Accounts
+        public List<Account> ReadAll()
+        {
+            return _ctx.Accounts.Select(entity => new Account
+            {
+                Id = entity.Id,
+                Customer = entity.Customer,
+                Email = entity.Email,
+                Group = entity.Group,
+                Name = entity.Name
+            }).ToList();
+        }
+        
+        //Get single account by ID
+        public Account GetAccount(int id)
+        {
+            return _ctx.Accounts.Select(entity => new Account
+            {
+                Id = entity.Id,
+                Name = entity.Name,
+                Email = entity.Email,
+                Customer = entity.Customer,
+                Group = entity.Group
+            }).FirstOrDefault(account => account.Id == id);
+        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         public Account CreateAccount(Account account)
         {
             var entity = _ctx.Accounts.Add(new AccountEntity

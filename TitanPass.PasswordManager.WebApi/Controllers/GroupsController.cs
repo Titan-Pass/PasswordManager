@@ -43,5 +43,25 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             });
             return Ok(dto);
         }
+
+
+
+        /*[HttpGet]
+        public ActionResult<GroupsDto> GetAllGroups()
+        {
+            
+        }*/
+
+
+        [HttpGet("{id:int}")]
+        public ActionResult<GroupDto> GetGroupById(int id)
+        {
+            var group = _groupService.GetGroupById(id);
+            return Ok(new GroupDto
+            {
+                Id = group.Id,
+                Name = group.Name
+            });
+        }
     }
 }
