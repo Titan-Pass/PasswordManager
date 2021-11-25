@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using TitanPass.PasswordManager.Core.Models;
 using TitanPass.PasswordManager.DB.Entities;
@@ -27,7 +28,7 @@ namespace TitanPass.PasswordManager.DB.Repositories
 
         public List<Customer> GetAllCustomers()
         {
-            throw new System.NotImplementedException();
+            return null;
         }
 
         public Customer CreateCustomer(Customer customer)

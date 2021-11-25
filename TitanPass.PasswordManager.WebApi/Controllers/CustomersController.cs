@@ -42,5 +42,38 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             });
             return Ok(dto);
         }
+
+        [HttpGet]
+        public ActionResult<CustomersDto> GetAllCostumers()
+        {
+            try
+            {
+                var customers = _customerService.GetAllCustomers()
+                    .Select(customer => new CustomerDto
+                    {
+                        Id = customer.Id,
+                        Email = customer.Email
+                    }).ToList();
+                return Ok(new CustomersDto
+                {
+                    List = customers
+                });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("{id: int}")]
+        public ActionResult<CustomerDto> GetProductById(int id)
+        {
+            var costumer = _customerService.GetCustomerById(id);
+            return Ok(new Customer
+            {
+                Id = costumer.Id,
+                Email = costumer.Email
+            });
+        }
     }
 }

@@ -15,17 +15,6 @@ namespace TitanPass.PasswordManager.DB.Repositories
             _ctx = ctx;
         }
         
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
         public Group GetGroupById(int id)
         {
             return _ctx.Groups.Select(entity => new Group

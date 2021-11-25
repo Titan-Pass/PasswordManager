@@ -4,6 +4,6 @@ namespace TitanPass.PasswordManager.WebApi.Dtos
 {
     public class GroupsDto
     {
-        private List<GroupDto> Groups { get; set; }
+        public List<GroupDto> List { get; set; }
     }
 }

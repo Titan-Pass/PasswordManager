@@ -43,16 +43,29 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             });
             return Ok(dto);
         }
-
-
-
-        /*[HttpGet]
+        
+        [HttpGet]
         public ActionResult<GroupsDto> GetAllGroups()
         {
-            
-        }*/
-
-
+            try
+            {
+                var groups = _groupService.GetAllGroups()
+                    .Select(group => new GroupDto
+                    {
+                        Id = group.Id,
+                        Name = group.Name
+                    }).ToList();
+                return Ok(new GroupsDto
+                {
+                    List = groups
+                });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+        
         [HttpGet("{id:int}")]
         public ActionResult<GroupDto> GetGroupById(int id)
         {
