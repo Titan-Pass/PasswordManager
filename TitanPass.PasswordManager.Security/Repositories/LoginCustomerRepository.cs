@@ -24,7 +24,8 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 Id = entity.Id,
                 Email = entity.Email,
                 HashedPassword = entity.HashedPassword,
-                Salt = Encoding.ASCII.GetBytes(entity.Salt)
+                Salt = entity.Salt
+                //Salt = Encoding.ASCII.GetBytes(entity.Salt)
             };
         }
     }

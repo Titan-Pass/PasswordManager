@@ -21,26 +21,14 @@ namespace TitanPass.PasswordManager.DB.Repositories
             return _ctx.Accounts.Select(entity => new Account
             {
                 Id = entity.Id,
-                Email = entity.Email
+                Name = entity.Name,
+                Email = entity.Email,
+                Customer = entity.Customer,
+                Group = entity.Group
             }).FirstOrDefault(account => account.Id == id);
         }
 
         public List<Account> GetAllAccounts()
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public List<Account> GetAccountsFromCustomer(int id)
-        {
-            throw new System.NotImplementedException();
-        }
-
-
-
-
-
-        //Read all Accounts
-        public List<Account> ReadAll()
         {
             return _ctx.Accounts.Select(entity => new Account
             {
@@ -51,43 +39,12 @@ namespace TitanPass.PasswordManager.DB.Repositories
                 Name = entity.Name
             }).ToList();
         }
-        
-        //Get single account by ID
-        public Account GetAccount(int id)
+
+        public List<Account> GetAccountsFromCustomer(int id)
         {
-            return _ctx.Accounts.Select(entity => new Account
-            {
-                Id = entity.Id,
-                Name = entity.Name,
-                Email = entity.Email,
-                Customer = entity.Customer,
-                Group = entity.Group
-            }).FirstOrDefault(account => account.Id == id);
+            throw new System.NotImplementedException();
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
         public Account CreateAccount(Account account)
         {
             var entity = _ctx.Accounts.Add(new AccountEntity

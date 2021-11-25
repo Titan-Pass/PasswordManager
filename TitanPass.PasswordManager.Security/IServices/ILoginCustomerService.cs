@@ -4,6 +4,6 @@ namespace TitanPass.PasswordManager.Security.IServices
 {
     public interface ILoginCustomerService
     {
-        LoginCustomer Login(string email, string password);
+        LoginCustomer GetCustomer(string email);
     }
 }

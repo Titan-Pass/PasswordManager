@@ -65,8 +65,8 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             }
         }
 
-        [HttpGet("{id: int}")]
-        public ActionResult<CustomerDto> GetProductById(int id)
+        [HttpGet("{id:int}")]
+        public ActionResult<CustomerDto> GetCustomerById(int id)
         {
             var costumer = _customerService.GetCustomerById(id);
             return Ok(new Customer
