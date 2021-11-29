@@ -23,8 +23,16 @@ namespace TitanPass.PasswordManager.DB.Repositories
                 Id = entity.Id,
                 Name = entity.Name,
                 Email = entity.Email,
-                Customer = entity.Customer,
-                Group = entity.Group
+                Customer = new Customer
+                {
+                    Id = entity.Customer.Id,
+                    Email = entity.Customer.Email
+                },
+                Group = new Group
+                {
+                    Id = entity.Group.Id,
+                    Name = entity.Group.Name
+                }
             }).FirstOrDefault(account => account.Id == id);
         }
 
@@ -33,16 +41,40 @@ namespace TitanPass.PasswordManager.DB.Repositories
             return _ctx.Accounts.Select(entity => new Account
             {
                 Id = entity.Id,
-                Customer = entity.Customer,
+                
                 Email = entity.Email,
-                Group = entity.Group,
-                Name = entity.Name
+                Name = entity.Name,
+                Group = new Group
+                {
+                    Id = entity.Group.Id,
+                    Name = entity.Group.Name
+                },
+                Customer = new Customer
+                {
+                    Id = entity.Customer.Id,
+                    Email = entity.Customer.Email
+                }
             }).ToList();
         }
 
         public List<Account> GetAccountsFromCustomer(int id)
         {
-            throw new System.NotImplementedException();
+            return _ctx.Accounts.Select(entity => new Account
+            {
+                Id = entity.Id,
+                Email = entity.Email,
+                Name = entity.Name,
+                Group = new Group
+                {
+                    Id = entity.Group.Id,
+                    Name = entity.Group.Name
+                },
+                Customer = new Customer
+                {
+                    Id = entity.Customer.Id,
+                    Email = entity.Customer.Email
+                }
+            }).Where(account => account.Customer.Id == id).ToList();
         }
 
         public Account CreateAccount(Account account)
@@ -73,9 +105,7 @@ namespace TitanPass.PasswordManager.DB.Repositories
             return new Account
             {
                 Id = entity.Id,
-                Customer = entity.Customer,
                 Email = entity.Email,
-                Group = entity.Group
             };
         }
 

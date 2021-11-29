@@ -96,6 +96,7 @@ namespace TitanPass.PasswordManager.WebApi
             services.AddScoped<ICustomerRepository, CustomerRepository>();
             services.AddScoped<IGroupService, GroupService>();
             services.AddScoped<IGroupRepository, GroupRepository>();
+            services.AddScoped<IPasswordManagerDbContextSeeder, PasswordManagerDbContextSeeder>();
 
             
             //Setting up dependency injection for security
@@ -144,6 +145,14 @@ namespace TitanPass.PasswordManager.WebApi
                 
                 app.UseCors("dev-policy");
                 securityDbContextSeeder.SeedDevelopment();
+                
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    var ctx = services.GetService<PasswordManagerDbContext>();
+                    ctx.Database.EnsureDeleted();
+                    ctx.Database.EnsureCreated();
+                }
             }
 
             app.UseHttpsRedirection();

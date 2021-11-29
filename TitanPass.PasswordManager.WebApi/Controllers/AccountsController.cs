@@ -23,7 +23,7 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         
         //Get all accounts
         [HttpGet]
-        public ActionResult<AccountDto> GetAllAccounts()
+        public ActionResult<AccountsDto> GetAllAccounts()
         {
             try
             {
@@ -44,6 +44,70 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             }
         }
 
+        [HttpPost]
+        public ActionResult<AccountDto> CreateAccount([FromBody] AccountDto dto)
+        {
+            var accountFromDto = new Account
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                Email = dto.Email,
+                Customer = new Customer
+                {
+                    Id = dto.Customer.Id,
+                    Email = dto.Customer.Email
+                },
+                Group = new Group
+                {
+                    Id = dto.Group.Id,
+                    Name = dto.Group.Name
+                }
+            };
+
+            try
+            {
+                var newAccount = _accountService.CreateAccount(accountFromDto);
+                return Created($"https://localhost:5001/api/accounts/{newAccount.Id}", newAccount);
+            }
+            catch (ArgumentException ae)
+            {
+                return BadRequest(ae.Message);
+            }
+        }
+
+        [HttpGet("GetFromCustomer/{CustomerId}")]
+        public ActionResult<AccountsDto> GetAccounts(int CustomerId)
+        {
+            try
+            {
+                var accounts = _accountService.GetAccountsFromCustomer(CustomerId).Select(account => new AccountDto
+                {
+                    Id = account.Id,
+                    Email = account.Email,
+                    Name = account.Name,
+                    Customer = new CustomerDto
+                    {
+                        Id = account.Customer.Id,
+                        Email = account.Customer.Email
+                    },
+                    Group = new GroupDto
+                    {
+                        Id = account.Group.Id,
+                        Name = account.Group.Name
+                    }
+                }).ToList();
+
+                return Ok(new AccountsDto
+                {
+                    List = accounts
+                });
+
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
         //Get single account by Id
         [HttpGet("{id}")]
         public ActionResult<AccountDto> GetAccount(int id)
@@ -52,7 +116,18 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             return Ok(new AccountDto
             {
                 Email = account.Email,
-                Id = account.Id
+                Id = account.Id,
+                Name = account.Name,
+                Customer = new CustomerDto
+                {
+                    Id = account.Customer.Id,
+                    Email = account.Customer.Email
+                },
+                Group = new GroupDto
+                {
+                    Id = account.Group.Id,
+                    Name = account.Group.Name
+                }
             });
         }
         
@@ -73,7 +148,18 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             var account = _accountService.UpdateAccount(new Account
             {
                 Id = dto.Id,
-                Email = dto.Email
+                Email = dto.Email,
+                Name = dto.Name,
+                Customer = new Customer
+                {
+                    Email = dto.Customer.Email,
+                    Id = dto.Customer.Id
+                },
+                Group = new Group
+                {
+                    Id = dto.Group.Id,
+                    Name = dto.Group.Name
+                }
             });
             return Ok(dto);
         }

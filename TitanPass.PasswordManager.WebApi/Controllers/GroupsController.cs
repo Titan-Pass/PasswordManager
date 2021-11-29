@@ -29,7 +29,7 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public ActionResult<GroupDto> UpdateCustomer(int id, GroupDto dto)
+        public ActionResult<GroupDto> UpdateGroup(int id, GroupDto dto)
         {
             if (id != dto.Id)
             {

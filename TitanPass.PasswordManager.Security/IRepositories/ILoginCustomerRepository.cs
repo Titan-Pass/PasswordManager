@@ -5,5 +5,7 @@ namespace TitanPass.PasswordManager.Security.IRepositories
     public interface ILoginCustomerRepository
     {
         LoginCustomer FindCustomer(string email);
+
+        LoginCustomer CreateLogin(LoginCustomer loginCustomer);
     }
 }

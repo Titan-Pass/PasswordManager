@@ -22,7 +22,7 @@ namespace TitanPass.PasswordManager.Security.Services
         
         public JwtToken GenerateJwtToken(string email, string password)
         {
-            var loginCustomer = _loginCustomer.GetCustomer(email);
+            var loginCustomer = _loginCustomer.GetCustomerLogin(email);
             //Validate User - Generate
             if (loginCustomer != null)
             {

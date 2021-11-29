@@ -13,9 +13,14 @@ namespace TitanPass.PasswordManager.Security.Services
             _customerRepository = loginCustomerRepository;
         }
         
-        public LoginCustomer GetCustomer(string email)
+        public LoginCustomer GetCustomerLogin(string email)
         {
             return _customerRepository.FindCustomer(email);
+        }
+
+        public LoginCustomer CreateLogin(LoginCustomer loginCustomer)
+        {
+            return _customerRepository.CreateLogin(loginCustomer);
         }
     }
 }

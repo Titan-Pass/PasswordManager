@@ -43,6 +43,26 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             return Ok(dto);
         }
 
+        [HttpPost]
+        public ActionResult<CustomerDto> CreateCustomer([FromBody] CustomerDto dto)
+        {
+            var customerFromDto = new Customer
+            {
+                Id = dto.Id,
+                Email = dto.Email
+            };
+
+            try
+            {
+                var newCustomer = _customerService.CreateCustomer(customerFromDto);
+                return Created($"https://localhost:5001/api/customers/{newCustomer.Id}", newCustomer);
+            }
+            catch (ArgumentException ae)
+            {
+                return BadRequest(ae.Message);
+            }
+        }
+
         [HttpGet]
         public ActionResult<CustomersDto> GetAllCostumers()
         {

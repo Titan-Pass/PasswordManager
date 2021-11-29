@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Text;
+using TitanPass.PasswordManager.Security.Entities;
 using TitanPass.PasswordManager.Security.IRepositories;
 using TitanPass.PasswordManager.Security.Models;
 
@@ -24,8 +25,32 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 Id = entity.Id,
                 Email = entity.Email,
                 HashedPassword = entity.HashedPassword,
-                Salt = entity.Salt
+                Salt = entity.Salt,
+                CustomerId = entity.CustomerId
                 //Salt = Encoding.ASCII.GetBytes(entity.Salt)
+            };
+        }
+
+        public LoginCustomer CreateLogin(LoginCustomer loginCustomer)
+        {
+            var entity = _ctx.LoginCustomers.Add(new LoginCustomerEntity
+            {
+                Id = loginCustomer.Id,
+                Email = loginCustomer.Email,
+                HashedPassword = loginCustomer.HashedPassword,
+                Salt = loginCustomer.Salt,
+                CustomerId = loginCustomer.CustomerId
+            }).Entity;
+
+            _ctx.SaveChanges();
+
+            return new LoginCustomer
+            {
+                Id = entity.Id,
+                Email = entity.Email,
+                CustomerId = entity.CustomerId,
+                HashedPassword = entity.HashedPassword,
+                Salt = entity.Salt
             };
         }
     }

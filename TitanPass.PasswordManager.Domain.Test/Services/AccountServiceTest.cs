@@ -103,6 +103,26 @@ namespace TitanPass.PasswordManager.Domain.Test.Services
             
             repoMock.Verify(repository => repository.DeleteAccount(account.Id));
         }
+
+        [Fact]
+        public void CreateAccount()
+        {
+            var expected = new Account
+            {
+                Id = 1,
+                Name = "test",
+                Email = "test@gmail.com"
+            };
+
+            var repoMock = new Mock<IAccountRepository>();
+            repoMock.Setup(repository => repository.CreateAccount(expected)).Returns(expected);
+
+            AccountService accountService = new AccountService(repoMock.Object);
+
+            accountService.CreateAccount(expected);
+            
+            Assert.Equal(expected, accountService.CreateAccount(expected), new AccountComparer());
+        }
     }
 
     public class AccountComparer : IEqualityComparer<Account>
