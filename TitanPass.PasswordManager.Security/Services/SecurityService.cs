@@ -24,7 +24,7 @@ namespace TitanPass.PasswordManager.Security.Services
         {
             var loginCustomer = _loginCustomer.GetCustomerLogin(email);
             //Validate User - Generate
-            if (loginCustomer != null)
+            if (Authenticate(password, loginCustomer))
             {
                 var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"]));
                 var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
