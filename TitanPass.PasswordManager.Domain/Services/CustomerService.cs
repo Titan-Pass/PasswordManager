@@ -27,6 +27,11 @@ namespace TitanPass.PasswordManager.Domain.Services
             return _customerRepository.GetCustomerById(id);
         }
 
+        public Customer GetCustomerByEmail(string email)
+        {
+            return _customerRepository.GetCustomerByEmail(email);
+        }
+
         public List<Customer> GetAllCustomers()
         {
             return _customerRepository.GetAllCustomers();

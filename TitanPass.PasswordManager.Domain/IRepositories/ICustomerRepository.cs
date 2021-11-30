@@ -6,6 +6,8 @@ namespace TitanPass.PasswordManager.Domain.IRepositories
     public interface ICustomerRepository
     {
         Customer GetCustomerById(int id);
+        
+        Customer GetCustomerByEmail(string email);
 
         List<Customer> GetAllCustomers();
 

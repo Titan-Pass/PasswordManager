@@ -26,6 +26,16 @@ namespace TitanPass.PasswordManager.DB.Repositories
                 }).FirstOrDefault(customer => customer.Id == id);
         }
 
+        public Customer GetCustomerByEmail(string email)
+        {
+            return _ctx.Customers
+                .Select(entity => new Customer
+                {
+                    Id = entity.Id,
+                    Email = entity.Email
+                }).FirstOrDefault(customer => customer.Email == email);
+        }
+
         public List<Customer> GetAllCustomers()
         {
             return null;

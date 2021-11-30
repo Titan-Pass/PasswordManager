@@ -36,6 +36,7 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             };
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public ActionResult<LoginCustomer> CreateLoginCustomer([FromBody] CreateLoginCustomerDto dto)
         {

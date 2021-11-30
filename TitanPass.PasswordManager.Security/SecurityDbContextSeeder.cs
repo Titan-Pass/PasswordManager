@@ -28,12 +28,6 @@ namespace TitanPass.PasswordManager.Security
                 rngCsp.GetBytes(secretBytes);
             }
 
-            Customer customer = new Customer
-            {
-                Id = 1,
-                Email = "test@gmail.com"
-            };
-
             _ctx.LoginCustomers.Add(new LoginCustomerEntity
             {
                 Id = 1,
@@ -42,6 +36,23 @@ namespace TitanPass.PasswordManager.Security
                 Salt = secretBytes,
                 HashedPassword = _securityService.HashPassword("123456", secretBytes)
             });
+
+            _ctx.SaveChanges();
+            
+            using (var rngCsp = new System.Security.Cryptography.RNGCryptoServiceProvider() {})
+            {
+                rngCsp.GetBytes(secretBytes);
+            }
+
+            _ctx.LoginCustomers.Add(new LoginCustomerEntity
+            {
+                Id = 2,
+                CustomerId = 2,
+                Email = "test2@hotmail.com",
+                Salt = secretBytes,
+                HashedPassword = _securityService.HashPassword("654321", secretBytes)
+            });
+            
             _ctx.SaveChanges();
         }
 

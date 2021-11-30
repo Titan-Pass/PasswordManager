@@ -7,6 +7,8 @@ namespace TitanPass.PasswordManager.Core.IServices
     {
         Customer GetCustomerById(int id);
 
+        Customer GetCustomerByEmail(string email);
+
         List<Customer> GetAllCustomers();
 
         Customer CreateCustomer(Customer customer);

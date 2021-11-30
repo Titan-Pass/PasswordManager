@@ -21,6 +21,12 @@ namespace TitanPass.PasswordManager.DB
                 Email = "test@gmail.com"
             });
 
+            modelBuilder.Entity<CustomerEntity>().HasData(new CustomerEntity
+            {
+                Id = 2,
+                Email = "test2@hotmail.com"
+            });
+
             modelBuilder.Entity<GroupEntity>().HasData(new GroupEntity
             {
                 Id = 1,
@@ -49,6 +55,15 @@ namespace TitanPass.PasswordManager.DB
                 Email = "test@gmail.com",
                 CustomerId = 1,
                 GroupId = 2
+            });
+
+            modelBuilder.Entity<AccountEntity>().HasData(new AccountEntity
+            {
+                Id = 3,
+                Name = "YouTube.com",
+                Email = "test2@hotmail.com",
+                GroupId = 2,
+                CustomerId = 2
             });
             
             modelBuilder.Entity<AccountEntity>()

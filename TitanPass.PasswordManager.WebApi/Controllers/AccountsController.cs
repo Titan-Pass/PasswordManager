@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TitanPass.PasswordManager.Core.IServices;
@@ -15,36 +17,16 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _accountService;
+        private readonly ICustomerService _customerService;
 
-        public AccountsController(IAccountService service)
+        public AccountsController(IAccountService service, ICustomerService customerService)
         {
             _accountService = service;
-        }
-        
-        //Get all accounts
-        [HttpGet]
-        public ActionResult<AccountsDto> GetAllAccounts()
-        {
-            try
-            {
-                var accounts = _accountService.GetAllAccounts().Select(account => new AccountDto
-                {
-                    Id = account.Id,
-                    Email = account.Email
-                }).ToList();
-
-                return Ok(new AccountsDto
-                {
-                    List = accounts
-                });
-            }
-            catch (Exception e)
-            {
-                return StatusCode(500, e.Message);
-            }
+            _customerService = customerService;
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult<AccountDto> CreateAccount([FromBody] AccountDto dto)
         {
             var accountFromDto = new Account
@@ -75,12 +57,16 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             }
         }
 
-        [HttpGet("GetFromCustomer/{CustomerId}")]
-        public ActionResult<AccountsDto> GetAccounts(int CustomerId)
+        [HttpGet]
+        [Authorize]
+        public ActionResult<AccountsDto> GetAccounts()
         {
+            var currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
+            Customer customer = _customerService.GetCustomerByEmail(currentCustomerEmail);
+
             try
             {
-                var accounts = _accountService.GetAccountsFromCustomer(CustomerId).Select(account => new AccountDto
+                var accounts = _accountService.GetAccountsFromCustomer(customer.Id).Select(account => new AccountDto
                 {
                     Id = account.Id,
                     Email = account.Email,
