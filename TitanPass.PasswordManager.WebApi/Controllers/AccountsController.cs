@@ -61,8 +61,10 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         [Authorize]
         public ActionResult<AccountsDto> GetAccounts()
         {
-            var currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
-            Customer customer = _customerService.GetCustomerByEmail(currentCustomerEmail);
+            string currentCustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int customerId = Int32.Parse(currentCustomerId);
+            
+            Customer customer = _customerService.GetCustomerById(customerId);
 
             try
             {
