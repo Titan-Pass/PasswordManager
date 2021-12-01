@@ -49,6 +49,8 @@ namespace TitanPass.PasswordManager.DB.Repositories
                 Email = customer.Email
             }).Entity;
 
+            _ctx.SaveChanges();
+
             return new Customer
             {
                 Id = entity.Id,

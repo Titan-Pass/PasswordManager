@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TitanPass.PasswordManager.Core.IServices;
+using TitanPass.PasswordManager.Core.Models;
 using TitanPass.PasswordManager.Security.IServices;
 using TitanPass.PasswordManager.Security.Models;
 using TitanPass.PasswordManager.WebApi.Dtos;
@@ -17,11 +19,13 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
     {
         private readonly ISecurityService _securityService;
         private readonly ILoginCustomerService _loginCustomerService;
+        private readonly ICustomerService _customerService;
 
-        public AuthController(ISecurityService securityService, ILoginCustomerService customerService)
+        public AuthController(ISecurityService securityService, ILoginCustomerService customerService, ICustomerService service)
         {
             _securityService = securityService;
             _loginCustomerService = customerService;
+            _customerService = service;
         }
 
         [AllowAnonymous]
@@ -46,15 +50,23 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             {
                 rngCsp.GetBytes(secretBytes);
             }
-
+            
             var loginCustomerFromDto = new LoginCustomer
             {
                 Id = dto.Id,
                 Email = dto.Email,
-                CustomerId = dto.CustomerId,
                 Salt = secretBytes,
+                CustomerId = dto.CustomerId,
                 HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes)
             };
+
+            var customer = new Customer
+            {
+                Id = loginCustomerFromDto.Id,
+                Email = loginCustomerFromDto.Email
+            };
+            
+            _customerService.CreateCustomer(customer);
 
             try
             {
@@ -65,6 +77,6 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             {
                 return BadRequest(ae.Message);
             }
-        } 
+        }
     }
 }

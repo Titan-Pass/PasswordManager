@@ -39,7 +39,7 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 Email = loginCustomer.Email,
                 HashedPassword = loginCustomer.HashedPassword,
                 Salt = loginCustomer.Salt,
-                CustomerId = loginCustomer.CustomerId
+                CustomerId = loginCustomer.Id
             }).Entity;
 
             _ctx.SaveChanges();

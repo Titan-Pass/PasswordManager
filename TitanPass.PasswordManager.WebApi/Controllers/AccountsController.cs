@@ -29,6 +29,10 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         [Authorize]
         public ActionResult<AccountDto> CreateAccount([FromBody] AccountDto dto)
         {
+            string currentCustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int customerId = Int32.Parse(currentCustomerId);
+            Customer customer = _customerService.GetCustomerById(customerId);
+            
             var accountFromDto = new Account
             {
                 Id = dto.Id,
@@ -36,8 +40,8 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                 Email = dto.Email,
                 Customer = new Customer
                 {
-                    Id = dto.Customer.Id,
-                    Email = dto.Customer.Email
+                    Id = customer.Id,
+                    Email = customer.Email
                 },
                 Group = new Group
                 {

@@ -1,4 +1,5 @@
 ﻿using System;
+using TitanPass.PasswordManager.Core.Models;
 
 namespace TitanPass.PasswordManager.WebApi.Dtos
 {

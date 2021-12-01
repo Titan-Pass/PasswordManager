@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.EntityFrameworkCore.Metadata;
 using TitanPass.PasswordManager.Core.Models;
 
 namespace TitanPass.PasswordManager.Security.Entities

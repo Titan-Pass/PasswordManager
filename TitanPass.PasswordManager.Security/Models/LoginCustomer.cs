@@ -6,7 +6,6 @@ namespace TitanPass.PasswordManager.Security.Models
     {
         public int Id { get; set; }
         public string Email { get; set; }
-        public Customer Customer { get; set; }
         public int CustomerId { get; set; }
         public string HashedPassword { get; set; }
         public byte[] Salt { get; set; }
