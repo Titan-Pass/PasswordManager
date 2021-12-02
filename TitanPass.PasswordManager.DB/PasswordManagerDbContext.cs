@@ -30,14 +30,24 @@ namespace TitanPass.PasswordManager.DB
             modelBuilder.Entity<GroupEntity>().HasData(new GroupEntity
             {
                 Id = 1,
-                Name = "Work"
+                Name = "Work",
+                CustomerId = 1
             });
 
             modelBuilder.Entity<GroupEntity>().HasData(new GroupEntity
             {
                 Id = 2,
-                Name = "Social Media"
+                Name = "Social Media",
+                CustomerId = 1
             });
+            
+            modelBuilder.Entity<GroupEntity>().HasData(new GroupEntity
+            {
+                Id = 3,
+                Name = "Børn",
+                CustomerId = 2
+            });
+            
             
             modelBuilder.Entity<AccountEntity>().HasData(new AccountEntity
             {
@@ -62,7 +72,7 @@ namespace TitanPass.PasswordManager.DB
                 Id = 3,
                 Name = "YouTube.com",
                 Email = "test2@hotmail.com",
-                GroupId = 2,
+                GroupId = 3,
                 CustomerId = 2
             });
             

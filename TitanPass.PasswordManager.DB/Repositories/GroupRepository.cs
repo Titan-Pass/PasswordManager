@@ -35,7 +35,20 @@ namespace TitanPass.PasswordManager.DB.Repositories
 
         public Group CreateGroup(Group @group)
         {
-            throw new System.NotImplementedException();
+            var entity = _ctx.Groups.Add(new GroupEntity
+            {
+                Id = group.Id,
+                Name = group.Name,
+                CustomerId = group.Customer.Id
+            }).Entity;
+
+            _ctx.SaveChanges();
+
+            return new Group
+            {
+                Id = entity.Id,
+                Name = entity.Name
+            };
         }
 
         public Group DeleteGroup(int id)
