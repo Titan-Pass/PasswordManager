@@ -25,9 +25,9 @@ namespace TitanPass.PasswordManager.Domain.Services
             return _groupRepository.GetGroupById(id);
         }
 
-        public List<Group> GetAllGroups()
+        public List<Group> GetGroups(int id)
         {
-            return _groupRepository.GetAllGroups();
+            return _groupRepository.GetGroups(id);
         }
 
         public Group CreateGroup(Group @group)

@@ -24,13 +24,18 @@ namespace TitanPass.PasswordManager.DB.Repositories
             }).FirstOrDefault(group => group.Id == id);
         }
 
-        public List<Group> GetAllGroups()
+        public List<Group> GetGroups(int id)
         {
             return _ctx.Groups.Select(entity => new Group
             {
                 Id = entity.Id,
-                Name = entity.Name
-            }).ToList();
+                Name = entity.Name,
+                Customer = new Customer
+                {
+                    Id = entity.Customer.Id,
+                    Email = entity.Customer.Email
+                }
+            }).Where(group => group.Customer.Id == id).ToList();
         }
 
         public Group CreateGroup(Group @group)

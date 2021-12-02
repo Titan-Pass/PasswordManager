@@ -51,23 +51,24 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                 rngCsp.GetBytes(secretBytes);
             }
             
+            var customer = new Customer
+            {
+                Id = dto.Id,
+                Email = dto.Email
+            };
+            
+            _customerService.CreateCustomer(customer);
+            var newCustomer = _customerService.GetCustomerByEmail(customer.Email);
+            
             var loginCustomerFromDto = new LoginCustomer
             {
                 Id = dto.Id,
                 Email = dto.Email,
                 Salt = secretBytes,
-                CustomerId = dto.CustomerId,
-                HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes)
-            };
-
-            var customer = new Customer
-            {
-                Id = loginCustomerFromDto.Id,
-                Email = loginCustomerFromDto.Email
+                HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes),
+                CustomerId = newCustomer.Id
             };
             
-            _customerService.CreateCustomer(customer);
-
             try
             {
                 var newLoginCustomer = _loginCustomerService.CreateLogin(loginCustomerFromDto);

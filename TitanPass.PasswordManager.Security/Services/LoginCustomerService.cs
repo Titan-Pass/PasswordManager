@@ -22,5 +22,10 @@ namespace TitanPass.PasswordManager.Security.Services
         {
             return _customerRepository.CreateLogin(loginCustomer);
         }
+
+        public void UpdateCustomerId(int newId, string email)
+        {
+            _customerRepository.UpdateCustomerId(newId, email);
+        }
     }
 }

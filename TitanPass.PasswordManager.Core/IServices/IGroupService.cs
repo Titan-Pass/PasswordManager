@@ -7,7 +7,7 @@ namespace TitanPass.PasswordManager.Core.IServices
     {
         Group GetGroupById(int id);
         
-        List<Group> GetAllGroups();
+        List<Group> GetGroups(int id);
 
         Group CreateGroup(Group group);
         

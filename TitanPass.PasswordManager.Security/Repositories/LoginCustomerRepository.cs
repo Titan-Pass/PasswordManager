@@ -39,7 +39,7 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 Email = loginCustomer.Email,
                 HashedPassword = loginCustomer.HashedPassword,
                 Salt = loginCustomer.Salt,
-                CustomerId = loginCustomer.Id
+                CustomerId = loginCustomer.CustomerId
             }).Entity;
 
             _ctx.SaveChanges();
@@ -52,6 +52,24 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 HashedPassword = entity.HashedPassword,
                 Salt = entity.Salt
             };
+        }
+
+        public void UpdateCustomerId(int newId, string email)
+        {
+            var entity = _ctx.LoginCustomers.FirstOrDefault(customerEntity => customerEntity.Email == email);
+
+            if (entity != null)
+            {
+                _ctx.LoginCustomers.Update(new LoginCustomerEntity
+                {
+                    Id = entity.Id,
+                    Email = entity.Email,
+                    Salt = entity.Salt,
+                    HashedPassword = entity.HashedPassword,
+                    CustomerId = newId
+                });
+                _ctx.SaveChanges();
+            }
         }
     }
 }
