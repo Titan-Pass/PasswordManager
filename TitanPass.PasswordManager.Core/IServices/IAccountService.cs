@@ -9,6 +9,8 @@ namespace TitanPass.PasswordManager.Core.IServices
 
         List<Account> GetAllAccounts();
 
+        string GetPassword(int id);
+
         List<Account> GetAccountsFromCustomer(int id);
 
         Account CreateAccount(Account account);

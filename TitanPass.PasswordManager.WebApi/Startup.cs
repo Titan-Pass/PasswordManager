@@ -105,6 +105,7 @@ namespace TitanPass.PasswordManager.WebApi
             services.AddScoped<ILoginCustomerService, LoginCustomerService>();
             services.AddScoped<ISecurityService, SecurityService>();
             services.AddScoped<ISecurityDbContextSeeder, SecurityDbContextSeeder>();
+            services.AddScoped<IEncryptionService, EncryptionService>();
             
             
             var loggerFactory = LoggerFactory.Create(builder => {

@@ -34,7 +34,8 @@ namespace TitanPass.PasswordManager.Security.Services
                     Configuration["Jwt:Audience"],
                     new List<Claim>
                     {
-                        new Claim(ClaimTypes.NameIdentifier, loginCustomer.CustomerId.ToString())
+                        new Claim(ClaimTypes.NameIdentifier, loginCustomer.CustomerId.ToString()),
+                        new Claim(ClaimTypes.Email, loginCustomer.Email)
                     },
                     expires: DateTime.Now.AddMinutes(10),
                     signingCredentials: credentials);

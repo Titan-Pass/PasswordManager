@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TitanPass.PasswordManager.Core.IServices;
 using TitanPass.PasswordManager.Core.Models;
+using TitanPass.PasswordManager.Security.IServices;
+using TitanPass.PasswordManager.Security.Models;
 using TitanPass.PasswordManager.WebApi.Dtos;
 
 namespace TitanPass.PasswordManager.WebApi.Controllers
@@ -17,66 +19,73 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _accountService;
-        private readonly ICustomerService _customerService;
+        private readonly ILoginCustomerService _loginCustomerService;
+        private IEncryptionService _encryptionService;
+        private readonly ISecurityService _securityService;
 
-        public AccountsController(IAccountService service, ICustomerService customerService)
+        public AccountsController(IAccountService service, ILoginCustomerService customerService, IEncryptionService encryptionService, ISecurityService securityService)
         {
             _accountService = service;
-            _customerService = customerService;
+            _loginCustomerService = customerService;
+            _encryptionService = encryptionService;
+            _securityService = securityService;
         }
 
         [HttpPost]
         [Authorize]
         public ActionResult<AccountDto> CreateAccount([FromBody] AccountDto dto)
         {
-            string currentCustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int customerId = Int32.Parse(currentCustomerId);
-            Customer customer = _customerService.GetCustomerById(customerId);
-            
-            var accountFromDto = new Account
-            {
-                Id = dto.Id,
-                Name = dto.Name,
-                Email = dto.Email,
-                Customer = new Customer
-                {
-                    Id = customer.Id,
-                    Email = customer.Email
-                },
-                Group = new Group
-                {
-                    Id = dto.Group.Id,
-                    Name = dto.Group.Name
-                }
-            };
+            string currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
+            LoginCustomer customer = _loginCustomerService.GetCustomerLogin(currentCustomerEmail);
 
-            try
+            if (_securityService.Authenticate(dto.MasterPassword, customer))
             {
-                var newAccount = _accountService.CreateAccount(accountFromDto);
-                return Created($"https://localhost:5001/api/accounts/{newAccount.Id}", newAccount);
+                var accountFromDto = new Account
+                {
+                    Id = dto.Id,
+                    Name = dto.Name,
+                    Email = dto.Email,
+                    Password = _encryptionService.EncryptPassword(dto.EncryptedPassword, dto.MasterPassword + customer.Salt),
+                    Customer = new Customer
+                    {
+                        Id = customer.CustomerId,
+                        Email = customer.Email
+                    },
+                    Group = new Group
+                    {
+                        Id = dto.Group.Id,
+                        Name = dto.Group.Name
+                    }
+                };
+                try
+                {
+                    var newAccount = _accountService.CreateAccount(accountFromDto);
+                    return Created($"https://localhost:5001/api/accounts/{newAccount.Id}", newAccount);
+                }
+                catch (ArgumentException ae)
+                {
+                    return BadRequest(ae.Message);
+                }
             }
-            catch (ArgumentException ae)
-            {
-                return BadRequest(ae.Message);
-            }
+
+            return BadRequest("Could not create new account");
         }
 
         [HttpGet]
         [Authorize]
         public ActionResult<AccountsDto> GetAccounts()
         {
-            string currentCustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            int customerId = Int32.Parse(currentCustomerId);
+            string currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
+            LoginCustomer customer = _loginCustomerService.GetCustomerLogin(currentCustomerEmail);
             
-            Customer customer = _customerService.GetCustomerById(customerId);
-
             try
             {
-                var accounts = _accountService.GetAccountsFromCustomer(customer.Id).Select(account => new AccountDto
+                var accounts = _accountService.GetAccountsFromCustomer(customer.CustomerId).Select(account => new AccountDto
                 {
                     Id = account.Id,
                     Email = account.Email,
                     Name = account.Name,
+                    EncryptedPassword = account.Password,
                     Customer = new CustomerDto
                     {
                         Id = account.Customer.Id,
@@ -100,6 +109,26 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                 return StatusCode(500, e.Message);
             }
         }
+
+        [Authorize]
+        [HttpGet("decrypt/{id}/{password}")]
+        public ActionResult<PasswordDto> GetPassword(string password, int id)
+        {
+            string currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
+            LoginCustomer customer = _loginCustomerService.GetCustomerLogin(currentCustomerEmail);
+
+            var account = _accountService.GetAccountById(id);
+
+            var decryptedPassword = _encryptionService.DecryptPassword(account.Password, password + customer.Salt);
+
+            var passwordDto = new PasswordDto
+            {
+                plainTextPassword = decryptedPassword
+            };
+
+            return Ok(passwordDto);
+        }
+        
         //Get single account by Id
         [HttpGet("{id}")]
         public ActionResult<AccountDto> GetAccount(int id)
@@ -123,12 +152,14 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             });
         }
         
+        [Authorize]
         [HttpDelete("{id}")]
         public Account Delete(int id)
         {
             return _accountService.DeleteAccount(id);
         }
 
+        [Authorize]
         [HttpPut("{id:int}")]
         public ActionResult<AccountDto> UpdateAccount(int id, AccountDto dto)
         {

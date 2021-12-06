@@ -23,6 +23,7 @@ namespace TitanPass.PasswordManager.DB.Repositories
                 Id = entity.Id,
                 Name = entity.Name,
                 Email = entity.Email,
+                Password = entity.EncryptedPassword,
                 Customer = new Customer
                 {
                     Id = entity.Customer.Id,
@@ -41,7 +42,6 @@ namespace TitanPass.PasswordManager.DB.Repositories
             return _ctx.Accounts.Select(entity => new Account
             {
                 Id = entity.Id,
-                
                 Email = entity.Email,
                 Name = entity.Name,
                 Group = new Group
@@ -64,6 +64,7 @@ namespace TitanPass.PasswordManager.DB.Repositories
                 Id = entity.Id,
                 Email = entity.Email,
                 Name = entity.Name,
+                Password = entity.EncryptedPassword,
                 Group = new Group
                 {
                     Id = entity.Group.Id,
@@ -77,6 +78,17 @@ namespace TitanPass.PasswordManager.DB.Repositories
             }).Where(account => account.Customer.Id == id).ToList();
         }
 
+        public string GetPassword(int id)
+        {
+            var entity = _ctx.Accounts.Select(accountEntity => new Account
+            {
+                Password = accountEntity.EncryptedPassword
+            }).FirstOrDefault(account => account.Id == id);
+
+            
+            return entity.Password;
+        }
+
         public Account CreateAccount(Account account)
         {
             var entity = _ctx.Accounts.Add(new AccountEntity
@@ -84,6 +96,7 @@ namespace TitanPass.PasswordManager.DB.Repositories
                 Id = account.Id,
                 Name = account.Name,
                 Email = account.Email,
+                EncryptedPassword = account.Password,
                 CustomerId = account.Customer.Id,
                 GroupId = account.Group.Id
             }).Entity;
@@ -115,7 +128,8 @@ namespace TitanPass.PasswordManager.DB.Repositories
             {
                 Id = account.Id,
                 Name = account.Name,
-                Email = account.Email
+                Email = account.Email,
+                EncryptedPassword = account.Password
             }).Entity;
 
             _ctx.SaveChanges();
