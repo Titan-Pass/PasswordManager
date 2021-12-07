@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -56,28 +57,65 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                 Id = dto.Id,
                 Email = dto.Email
             };
+
+            if (!_customerService.CheckIfCustomerExists(customer.Email))
+            {
+                _customerService.CreateCustomer(customer);
+                
+                var newCustomer = _customerService.GetCustomerByEmail(customer.Email);
             
-            _customerService.CreateCustomer(customer);
-            var newCustomer = _customerService.GetCustomerByEmail(customer.Email);
+                var loginCustomerFromDto = new LoginCustomer
+                {
+                    Id = dto.Id,
+                    Email = dto.Email,
+                    Salt = secretBytes,
+                    HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes),
+                    CustomerId = newCustomer.Id
+                };
+                try
+                {
+                    var newLoginCustomer = _loginCustomerService.CreateLogin(loginCustomerFromDto);
+                    return Created($"https://localhost:5001/api/auth/{newLoginCustomer.Id}", newLoginCustomer);
+                }
+                catch (ArgumentException ae)
+                {
+                    return BadRequest(ae.Message);
+                }
+            }
+
+            return BadRequest("User with the given email already exists");
+        }
+
+        [Authorize]
+        [HttpPut("{id:int}")]
+        public ActionResult<LoginCustomer> UpdatePassword(int id, LoginCustomerDto dto)
+        {
+            string currentCustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int customerId = Int32.Parse(currentCustomerId);
+            Customer customer = _customerService.GetCustomerById(customerId);
             
-            var loginCustomerFromDto = new LoginCustomer
+            if (id != customer.Id)
+            {
+                return BadRequest("It is not a match");
+            }
+            
+            Byte[] secretBytes = new byte[40];
+
+            using (var rngCsp = new System.Security.Cryptography.RNGCryptoServiceProvider() {})
+            {
+                rngCsp.GetBytes(secretBytes);
+            }
+
+            var LoginCustomer = _loginCustomerService.UpdateLoginCustomer(new LoginCustomer
             {
                 Id = dto.Id,
                 Email = dto.Email,
+                CustomerId = customer.Id,
                 Salt = secretBytes,
-                HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes),
-                CustomerId = newCustomer.Id
-            };
-            
-            try
-            {
-                var newLoginCustomer = _loginCustomerService.CreateLogin(loginCustomerFromDto);
-                return Created($"https://localhost:5001/api/auth/{newLoginCustomer.Id}", newLoginCustomer);
-            }
-            catch (ArgumentException ae)
-            {
-                return BadRequest(ae.Message);
-            }
+                HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes)
+            });
+
+            return Ok(dto);
         }
     }
 }

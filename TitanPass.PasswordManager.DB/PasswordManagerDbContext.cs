@@ -48,7 +48,6 @@ namespace TitanPass.PasswordManager.DB
                 CustomerId = 2
             });
             
-            
             modelBuilder.Entity<AccountEntity>().HasData(new AccountEntity
             {
                 Id = 1,
@@ -66,7 +65,7 @@ namespace TitanPass.PasswordManager.DB
                 CustomerId = 1,
                 GroupId = 2
             });
-
+            
             modelBuilder.Entity<AccountEntity>().HasData(new AccountEntity
             {
                 Id = 3,
@@ -75,7 +74,7 @@ namespace TitanPass.PasswordManager.DB
                 GroupId = 3,
                 CustomerId = 2
             });
-            
+
             modelBuilder.Entity<AccountEntity>()
                 .HasOne(account => account.Customer).WithMany()
                 .HasForeignKey(entity => new {entity.CustomerId});

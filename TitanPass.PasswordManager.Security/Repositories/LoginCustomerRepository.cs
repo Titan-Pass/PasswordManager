@@ -71,5 +71,34 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 _ctx.SaveChanges();
             }
         }
+
+        public LoginCustomer UpdateLoginCustomer(LoginCustomer loginCustomer)
+        {
+            var entity = _ctx.LoginCustomers.FirstOrDefault(customerEntity =>
+                customerEntity.CustomerId == loginCustomer.CustomerId);
+
+            if (entity != null)
+            {
+                _ctx.LoginCustomers.Update(new LoginCustomerEntity
+                {
+                    Id = entity.Id,
+                    Email = entity.Email,
+                    Salt = entity.Salt,
+                    HashedPassword = entity.HashedPassword,
+                    CustomerId = entity.CustomerId
+                });
+
+                _ctx.SaveChanges();
+            }
+
+            return new LoginCustomer
+            {
+                Id = entity.Id,
+                Email = entity.Email,
+                Salt = entity.Salt,
+                HashedPassword = entity.HashedPassword,
+                CustomerId = entity.CustomerId
+            };
+        }
     }
 }

@@ -10,6 +10,7 @@ namespace TitanPass.PasswordManager.Domain.IRepositories
         Customer GetCustomerByEmail(string email);
 
         List<Customer> GetAllCustomers();
+        bool CheckIfCustomerExists(string email);
 
         Customer CreateCustomer(Customer customer);
 

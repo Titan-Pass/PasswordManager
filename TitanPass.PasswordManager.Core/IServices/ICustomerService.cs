@@ -11,6 +11,8 @@ namespace TitanPass.PasswordManager.Core.IServices
 
         List<Customer> GetAllCustomers();
 
+        bool CheckIfCustomerExists(string email);
+
         Customer CreateCustomer(Customer customer);
 
         Customer DeleteCustomer(int id);

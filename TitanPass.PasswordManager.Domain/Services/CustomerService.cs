@@ -37,6 +37,11 @@ namespace TitanPass.PasswordManager.Domain.Services
             return _customerRepository.GetAllCustomers();
         }
 
+        public bool CheckIfCustomerExists(string email)
+        {
+            return _customerRepository.CheckIfCustomerExists(email);
+        }
+
         public Customer CreateCustomer(Customer customer)
         {
             return _customerRepository.CreateCustomer(customer);

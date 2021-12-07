@@ -41,6 +41,22 @@ namespace TitanPass.PasswordManager.DB.Repositories
             return null;
         }
 
+        public bool CheckIfCustomerExists(string email)
+        {
+            var entity = _ctx.Customers.Select(customerEntity => new Customer
+            {
+                Email = customerEntity.Email,
+                Id = customerEntity.Id
+            }).FirstOrDefault(customer => customer.Email == email);
+
+            if (entity == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         public Customer CreateCustomer(Customer customer)
         {
             var entity = _ctx.Customers.Add(new CustomerEntity
