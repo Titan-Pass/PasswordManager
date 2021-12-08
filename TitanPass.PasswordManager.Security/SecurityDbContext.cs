@@ -8,5 +8,6 @@ namespace TitanPass.PasswordManager.Security
         public SecurityDbContext(DbContextOptions<SecurityDbContext> options) : base(options) { }
         
         public DbSet<LoginCustomerEntity> LoginCustomers { get; set; }
+        
     }
 }

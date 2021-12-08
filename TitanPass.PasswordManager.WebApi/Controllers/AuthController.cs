@@ -88,7 +88,7 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
 
         [Authorize]
         [HttpPut("{id:int}")]
-        public ActionResult<LoginCustomer> UpdatePassword(int id, LoginCustomerDto dto)
+        public ActionResult<LoginCustomer> UpdateCustomer(int id, LoginCustomerDto dto)
         {
             string currentCustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int customerId = Int32.Parse(currentCustomerId);
@@ -106,14 +106,32 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                 rngCsp.GetBytes(secretBytes);
             }
 
-            var LoginCustomer = _loginCustomerService.UpdateLoginCustomer(new LoginCustomer
+            var loginCustomer = _loginCustomerService.GetCustomerLogin(customer.Email);
+            
+            var updatedLoginCustomer = new LoginCustomer
             {
                 Id = dto.Id,
                 Email = dto.Email,
-                CustomerId = customer.Id,
-                Salt = secretBytes,
-                HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes)
-            });
+                Salt = loginCustomer.Salt,
+                HashedPassword = loginCustomer.HashedPassword,
+                CustomerId = customer.Id
+            };
+
+            var updatedCustomer = new Customer
+            {
+                Id = customerId,
+                Email = dto.Email
+            };
+
+            try
+            {
+                _loginCustomerService.UpdateLoginCustomer(updatedLoginCustomer);
+                _customerService.UpdateCustomer(updatedCustomer);
+            }
+            catch (ArgumentException ae)
+            {
+                throw new ArgumentException(ae.Message);
+            }
 
             return Ok(dto);
         }

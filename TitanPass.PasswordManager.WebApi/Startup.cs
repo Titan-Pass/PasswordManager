@@ -126,6 +126,7 @@ namespace TitanPass.PasswordManager.WebApi
                 {
                     options
                         .UseLoggerFactory(loggerFactory)
+                        .EnableSensitiveDataLogging()
                         .UseSqlite("Data Source=auth.db");
                 });
 

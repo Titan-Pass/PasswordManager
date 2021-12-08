@@ -74,22 +74,16 @@ namespace TitanPass.PasswordManager.Security.Repositories
 
         public LoginCustomer UpdateLoginCustomer(LoginCustomer loginCustomer)
         {
-            var entity = _ctx.LoginCustomers.FirstOrDefault(customerEntity =>
-                customerEntity.CustomerId == loginCustomer.CustomerId);
-
-            if (entity != null)
+            var entity = _ctx.LoginCustomers.Update(new LoginCustomerEntity
             {
-                _ctx.LoginCustomers.Update(new LoginCustomerEntity
-                {
-                    Id = entity.Id,
-                    Email = entity.Email,
-                    Salt = entity.Salt,
-                    HashedPassword = entity.HashedPassword,
-                    CustomerId = entity.CustomerId
-                });
-
-                _ctx.SaveChanges();
-            }
+                Id = loginCustomer.Id,
+                Email = loginCustomer.Email,
+                Salt = loginCustomer.Salt,
+                HashedPassword = loginCustomer.HashedPassword,
+                CustomerId = loginCustomer.CustomerId
+            }).Entity;
+                
+            _ctx.SaveChanges();
 
             return new LoginCustomer
             {
@@ -99,6 +93,11 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 HashedPassword = entity.HashedPassword,
                 CustomerId = entity.CustomerId
             };
+        }
+
+        public void UpdatePassword(LoginCustomer loginCustomer)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

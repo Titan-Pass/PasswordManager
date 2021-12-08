@@ -11,5 +11,7 @@ namespace TitanPass.PasswordManager.Security.IServices
         void UpdateCustomerId(int id, string email);
 
         LoginCustomer UpdateLoginCustomer(LoginCustomer loginCustomer);
+
+        void UpdatePassword(LoginCustomer loginCustomer);
     }
 }

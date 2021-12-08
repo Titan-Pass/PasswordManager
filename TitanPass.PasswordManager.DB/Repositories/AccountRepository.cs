@@ -64,7 +64,6 @@ namespace TitanPass.PasswordManager.DB.Repositories
                 Id = entity.Id,
                 Email = entity.Email,
                 Name = entity.Name,
-                Password = entity.EncryptedPassword,
                 Group = new Group
                 {
                     Id = entity.Group.Id,
