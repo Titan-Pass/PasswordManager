@@ -32,10 +32,5 @@ namespace TitanPass.PasswordManager.Security.Services
         {
             return _customerRepository.UpdateLoginCustomer(loginCustomer);
         }
-
-        public void UpdatePassword(LoginCustomer loginCustomer)
-        {
-            _customerRepository.UpdatePassword(loginCustomer);
-        }
     }
 }

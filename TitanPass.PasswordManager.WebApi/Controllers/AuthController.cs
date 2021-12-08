@@ -88,13 +88,50 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
 
         [Authorize]
         [HttpPut("{id:int}")]
-        public ActionResult<LoginCustomer> UpdateCustomer(int id, LoginCustomerDto dto)
+        public ActionResult<UpdateLoginCustomerDto> UpdateCustomer(int id, UpdateLoginCustomerDto dto)
         {
             string currentCustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             int customerId = Int32.Parse(currentCustomerId);
             Customer customer = _customerService.GetCustomerById(customerId);
             
-            if (id != customer.Id)
+            if (id != dto.Id)
+            {
+                return BadRequest("It is not a match");
+            }
+
+            var loginCustomer = _loginCustomerService.GetCustomerLogin(customer.Email);
+
+            if (loginCustomer != null)
+            {
+                loginCustomer.Email = dto.Email;
+            }
+
+            if (customer != null)
+            {
+                customer.Email = dto.Email;
+            }
+
+            try
+            {
+                _loginCustomerService.UpdateLoginCustomer(loginCustomer);
+                _customerService.UpdateCustomer(customer);
+            }
+            catch (ArgumentException ae)
+            {
+                throw new ArgumentException(ae.Message);
+            }
+
+            return Ok(dto);
+        }
+
+        [Authorize]
+        [HttpPut("password/{id:int}")]
+        public ActionResult<UpdatePasswordDto> UpdatePassword(int id, UpdatePasswordDto dto)
+        {
+            string currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
+            LoginCustomer loginCustomer = _loginCustomerService.GetCustomerLogin(currentCustomerEmail);
+
+            if (id != dto.Id)
             {
                 return BadRequest("It is not a match");
             }
@@ -106,27 +143,15 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                 rngCsp.GetBytes(secretBytes);
             }
 
-            var loginCustomer = _loginCustomerService.GetCustomerLogin(customer.Email);
-            
-            var updatedLoginCustomer = new LoginCustomer
+            if (loginCustomer != null)
             {
-                Id = dto.Id,
-                Email = dto.Email,
-                Salt = loginCustomer.Salt,
-                HashedPassword = loginCustomer.HashedPassword,
-                CustomerId = customer.Id
-            };
-
-            var updatedCustomer = new Customer
-            {
-                Id = customerId,
-                Email = dto.Email
-            };
+                loginCustomer.Salt = secretBytes;
+                loginCustomer.HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes);
+            }
 
             try
             {
-                _loginCustomerService.UpdateLoginCustomer(updatedLoginCustomer);
-                _customerService.UpdateCustomer(updatedCustomer);
+                _loginCustomerService.UpdateLoginCustomer(loginCustomer);
             }
             catch (ArgumentException ae)
             {

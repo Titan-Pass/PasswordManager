@@ -74,6 +74,7 @@ namespace TitanPass.PasswordManager.Security.Repositories
 
         public LoginCustomer UpdateLoginCustomer(LoginCustomer loginCustomer)
         {
+            _ctx.ChangeTracker.Clear();
             var entity = _ctx.LoginCustomers.Update(new LoginCustomerEntity
             {
                 Id = loginCustomer.Id,
@@ -93,11 +94,6 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 HashedPassword = entity.HashedPassword,
                 CustomerId = entity.CustomerId
             };
-        }
-
-        public void UpdatePassword(LoginCustomer loginCustomer)
-        {
-            throw new System.NotImplementedException();
         }
     }
 }
