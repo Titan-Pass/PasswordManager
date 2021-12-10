@@ -7,6 +7,8 @@
         public string Name { get; set; }
         public string EncryptedPassword { get; set; }
         public string MasterPassword { get; set; }
+
+        public int GroupId { get; set; }
         public CustomerDto Customer { get; set; }
         public GroupDto Group { get; set; }
     }

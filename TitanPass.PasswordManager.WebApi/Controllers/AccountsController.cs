@@ -22,13 +22,15 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         private readonly ILoginCustomerService _loginCustomerService;
         private IEncryptionService _encryptionService;
         private readonly ISecurityService _securityService;
+        private readonly IGroupService _groupService;
 
-        public AccountsController(IAccountService service, ILoginCustomerService customerService, IEncryptionService encryptionService, ISecurityService securityService)
+        public AccountsController(IAccountService service, ILoginCustomerService customerService, IEncryptionService encryptionService, ISecurityService securityService, IGroupService groupService)
         {
             _accountService = service;
             _loginCustomerService = customerService;
             _encryptionService = encryptionService;
             _securityService = securityService;
+            _groupService = groupService;
         }
 
         [HttpPost]
@@ -37,6 +39,7 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         {
             string currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
             LoginCustomer customer = _loginCustomerService.GetCustomerLogin(currentCustomerEmail);
+            Group @group = _groupService.GetGroupById(dto.GroupId);
 
             if (_securityService.Authenticate(dto.MasterPassword, customer))
             {
@@ -53,8 +56,8 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                     },
                     Group = new Group
                     {
-                        Id = dto.Group.Id,
-                        Name = dto.Group.Name
+                        Id = group.Id,
+                        Name = group.Name
                     }
                 };
                 try
@@ -111,15 +114,15 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("decrypt/{id}")]
-        public ActionResult<PasswordDto> GetPassword(int id, PasswordDto dto)
+        [HttpGet("decrypt")]
+        public ActionResult<PasswordDto> GetPassword([FromQuery] int id, string password)
         {
             string currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
             LoginCustomer customer = _loginCustomerService.GetCustomerLogin(currentCustomerEmail);
 
             var account = _accountService.GetAccountById(id);
 
-            var decryptedPassword = _encryptionService.DecryptPassword(account.Password, dto.plainTextPassword + customer.Salt);
+            var decryptedPassword = _encryptionService.DecryptPassword(account.Password, password + customer.Salt);
 
             var passwordDto = new PasswordDto
             {
