@@ -77,6 +77,26 @@ namespace TitanPass.PasswordManager.DB.Repositories
             }).Where(account => account.Customer.Id == id).ToList();
         }
 
+        public List<Account> GetAccountsFromGroup(int groupId, int customerId)
+        {
+            return _ctx.Accounts.Select(entity => new Account
+            {
+                Id = entity.Id,
+                Email = entity.Email,
+                Name = entity.Name,
+                Group = new Group
+                {
+                    Id = entity.Group.Id,
+                    Name = entity.Group.Name
+                },
+                Customer = new Customer
+                {
+                    Id = entity.Customer.Id,
+                    Email = entity.Customer.Email
+                }
+            }).Where(account => account.Group.Id == groupId && account.Customer.Id == customerId).ToList();
+        }
+
         public string GetPassword(int id)
         {
             var entity = _ctx.Accounts.Select(accountEntity => new Account

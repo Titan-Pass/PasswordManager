@@ -11,6 +11,8 @@ namespace TitanPass.PasswordManager.Domain.IRepositories
         
         List<Account> GetAccountsFromCustomer(int id);
         
+        List<Account> GetAccountsFromGroup(int groupId, int customerId);
+        
         string GetPassword(int id);
 
         Account CreateAccount(Account account);

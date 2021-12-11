@@ -23,14 +23,16 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         private IEncryptionService _encryptionService;
         private readonly ISecurityService _securityService;
         private readonly IGroupService _groupService;
+        private readonly ICustomerService _customerService;
 
-        public AccountsController(IAccountService service, ILoginCustomerService customerService, IEncryptionService encryptionService, ISecurityService securityService, IGroupService groupService)
+        public AccountsController(IAccountService service, ILoginCustomerService customerService, IEncryptionService encryptionService, ISecurityService securityService, IGroupService groupService, ICustomerService cService)
         {
             _accountService = service;
             _loginCustomerService = customerService;
             _encryptionService = encryptionService;
             _securityService = securityService;
             _groupService = groupService;
+            _customerService = cService;
         }
 
         [HttpPost]
@@ -131,7 +133,45 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
 
             return Ok(passwordDto);
         }
-        
+
+        [HttpGet("groups/{id}")]
+        [Authorize]
+        public ActionResult<AccountsDto> GetAccountsFromGroups(int id)
+        {
+            string currentCustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int customerId = Int32.Parse(currentCustomerId);
+            Customer customer = _customerService.GetCustomerById(customerId);
+            
+            try
+            {
+                var accounts = _accountService.GetAccountsFromGroup(id, customer.Id).Select(account => new AccountDto
+                {
+                    Id = account.Id,
+                    Name = account.Name,
+                    Email = account.Email,
+                    Customer = new CustomerDto
+                    {
+                        Id = account.Customer.Id,
+                        Email = account.Customer.Email
+                    },
+                    Group = new GroupDto
+                    {
+                        Id = account.Group.Id,
+                        Name = account.Group.Name
+                    }
+                }).ToList();
+
+                return Ok(new AccountsDto
+                {
+                    List = accounts
+                });
+            }
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
+            }
+        }
+
         //Get single account by Id
         [HttpGet("{id}")]
         public ActionResult<AccountDto> GetAccount(int id)
