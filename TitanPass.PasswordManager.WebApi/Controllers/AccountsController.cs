@@ -174,6 +174,7 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
 
         //Get single account by Id
         [HttpGet("{id}")]
+        [Authorize]
         public ActionResult<AccountDto> GetAccount(int id)
         {
             var account = _accountService.GetAccountById(id);
@@ -206,6 +207,10 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         [HttpPut("{id:int}")]
         public ActionResult<AccountDto> UpdateAccount(int id, AccountDto dto)
         {
+            string currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
+            LoginCustomer customer = _loginCustomerService.GetCustomerLogin(currentCustomerEmail);
+            Group @group = _groupService.GetGroupById(dto.GroupId);
+            
             if (id != dto.Id)
             {
                 return BadRequest("It is not a match");
@@ -216,15 +221,16 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                 Id = dto.Id,
                 Email = dto.Email,
                 Name = dto.Name,
+                Password = _encryptionService.EncryptPassword(dto.EncryptedPassword, dto.MasterPassword + customer.Salt),
                 Customer = new Customer
                 {
-                    Email = dto.Customer.Email,
-                    Id = dto.Customer.Id
+                    Email = customer.Email,
+                    Id = customer.CustomerId
                 },
                 Group = new Group
                 {
-                    Id = dto.Group.Id,
-                    Name = dto.Group.Name
+                    Id = group.Id,
+                    Name = group.Name
                 }
             });
             return Ok(dto);

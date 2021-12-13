@@ -37,7 +37,7 @@ namespace TitanPass.PasswordManager.Security.Services
                         new Claim(ClaimTypes.NameIdentifier, loginCustomer.CustomerId.ToString()),
                         new Claim(ClaimTypes.Email, loginCustomer.Email)
                     },
-                    expires: DateTime.Now.AddMinutes(10),
+                    expires: DateTime.Now.AddMinutes(60),
                     signingCredentials: credentials);
                 return new JwtToken
                 {

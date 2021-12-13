@@ -148,7 +148,9 @@ namespace TitanPass.PasswordManager.DB.Repositories
                 Id = account.Id,
                 Name = account.Name,
                 Email = account.Email,
-                EncryptedPassword = account.Password
+                EncryptedPassword = account.Password,
+                CustomerId = account.Customer.Id,
+                GroupId = account.Group.Id
             }).Entity;
 
             _ctx.SaveChanges();
