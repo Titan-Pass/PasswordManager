@@ -124,11 +124,11 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
 
             var account = _accountService.GetAccountById(dto.Id);
 
-            var decryptedPassword = _encryptionService.DecryptPassword(account.Password, dto.plainTextPassword + customer.Salt);
+            var decryptedPassword = _encryptionService.DecryptPassword(account.Password, dto.password + customer.Salt);
 
             var passwordDto = new PasswordDto
             {
-                plainTextPassword = decryptedPassword
+                password = decryptedPassword
             };
 
             return Ok(passwordDto);
@@ -177,23 +177,32 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         [Authorize]
         public ActionResult<AccountDto> GetAccount(int id)
         {
+            string currentCustomerId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            int customerId = Int32.Parse(currentCustomerId);
+
             var account = _accountService.GetAccountById(id);
-            return Ok(new AccountDto
+
+            if (account.Customer.Id == customerId)
             {
-                Email = account.Email,
-                Id = account.Id,
-                Name = account.Name,
-                Customer = new CustomerDto
+                return Ok(new AccountDto
                 {
-                    Id = account.Customer.Id,
-                    Email = account.Customer.Email
-                },
-                Group = new GroupDto
-                {
-                    Id = account.Group.Id,
-                    Name = account.Group.Name
-                }
-            });
+                    Email = account.Email,
+                    Id = account.Id,
+                    Name = account.Name,
+                    Customer = new CustomerDto
+                    {
+                        Id = account.Customer.Id,
+                        Email = account.Customer.Email
+                    },
+                    Group = new GroupDto
+                    {
+                        Id = account.Group.Id,
+                        Name = account.Group.Name
+                    }
+                });
+            }
+
+            return BadRequest("Ids dont match");
         }
         
         [Authorize]

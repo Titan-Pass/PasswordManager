@@ -3,6 +3,6 @@
     public class PasswordDto
     {
         public int Id { get; set; }
-        public string plainTextPassword { get; set; }
+        public string password { get; set; }
     }
 }
