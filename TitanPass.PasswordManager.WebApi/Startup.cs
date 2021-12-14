@@ -157,7 +157,18 @@ namespace TitanPass.PasswordManager.WebApi
                     ctx.Database.EnsureCreated();
                 }
             }
-
+            else
+            {
+                securityDbContextSeeder.SeedDevelopment();
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var services = scope.ServiceProvider;
+                    var ctx = services.GetService<PasswordManagerDbContext>();
+                    ctx.Database.EnsureCreated();
+                }
+            }
+            
+            
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
