@@ -116,15 +116,15 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("decrypt")]
-        public ActionResult<PasswordDto> GetPassword([FromQuery] int id, string password)
+        [HttpPost("decrypt")]
+        public ActionResult<PasswordDto> GetPassword([FromBody] PasswordDto dto)
         {
             string currentCustomerEmail = User.FindFirstValue(ClaimTypes.Email);
             LoginCustomer customer = _loginCustomerService.GetCustomerLogin(currentCustomerEmail);
 
-            var account = _accountService.GetAccountById(id);
+            var account = _accountService.GetAccountById(dto.Id);
 
-            var decryptedPassword = _encryptionService.DecryptPassword(account.Password, password + customer.Salt);
+            var decryptedPassword = _encryptionService.DecryptPassword(account.Password, dto.plainTextPassword + customer.Salt);
 
             var passwordDto = new PasswordDto
             {
