@@ -9,5 +9,7 @@ namespace TitanPass.PasswordManager.Security.IServices
         bool Authenticate(string plainPassword, LoginCustomer customer);
         
         string HashPassword(string plainPassword, byte[] salt);
+
+        byte[] GenerateSalt();
     }
 }

@@ -53,12 +53,7 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         [HttpPost]
         public ActionResult<LoginCustomer> CreateLoginCustomer([FromBody] CreateLoginCustomerDto dto)
         {
-            Byte[] secretBytes = new byte[40];
-
-            using (var rngCsp = new System.Security.Cryptography.RNGCryptoServiceProvider() {})
-            {
-                rngCsp.GetBytes(secretBytes);
-            }
+            var salt = _securityService.GenerateSalt();
             
             var customer = new Customer
             {
@@ -76,8 +71,8 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
                 {
                     Id = dto.Id,
                     Email = dto.Email,
-                    Salt = secretBytes,
-                    HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes),
+                    Salt = salt,
+                    HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, salt),
                     CustomerId = newCustomer.Id
                 };
                 try
@@ -143,18 +138,13 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
             {
                 return BadRequest("It is not a match");
             }
-            
-            Byte[] secretBytes = new byte[40];
 
-            using (var rngCsp = new System.Security.Cryptography.RNGCryptoServiceProvider() {})
-            {
-                rngCsp.GetBytes(secretBytes);
-            }
+            var salt = _securityService.GenerateSalt();
 
             if (loginCustomer != null)
             {
-                loginCustomer.Salt = secretBytes;
-                loginCustomer.HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, secretBytes);
+                loginCustomer.Salt = salt;
+                loginCustomer.HashedPassword = _securityService.HashPassword(dto.PlainTextPassword, salt);
             }
 
             try

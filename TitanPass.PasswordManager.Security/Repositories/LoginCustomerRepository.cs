@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text;
 using TitanPass.PasswordManager.Security.Entities;
 using TitanPass.PasswordManager.Security.IRepositories;
@@ -25,9 +26,8 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 Id = entity.Id,
                 Email = entity.Email,
                 HashedPassword = entity.HashedPassword,
-                Salt = entity.Salt,
+                Salt = Convert.FromBase64String(entity.Salt),
                 CustomerId = entity.CustomerId
-                //Salt = Encoding.ASCII.GetBytes(entity.Salt)
             };
         }
 
@@ -38,7 +38,7 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 Id = loginCustomer.Id,
                 Email = loginCustomer.Email,
                 HashedPassword = loginCustomer.HashedPassword,
-                Salt = loginCustomer.Salt,
+                Salt = Convert.ToBase64String(loginCustomer.Salt),
                 CustomerId = loginCustomer.CustomerId
             }).Entity;
 
@@ -50,7 +50,7 @@ namespace TitanPass.PasswordManager.Security.Repositories
                 Email = entity.Email,
                 CustomerId = entity.CustomerId,
                 HashedPassword = entity.HashedPassword,
-                Salt = entity.Salt
+                Salt = Convert.FromBase64String(entity.Salt)
             };
         }
 
@@ -79,7 +79,7 @@ namespace TitanPass.PasswordManager.Security.Repositories
             {
                 Id = loginCustomer.Id,
                 Email = loginCustomer.Email,
-                Salt = loginCustomer.Salt,
+                Salt = Convert.ToBase64String(loginCustomer.Salt),
                 HashedPassword = loginCustomer.HashedPassword,
                 CustomerId = loginCustomer.CustomerId
             }).Entity;
@@ -90,7 +90,7 @@ namespace TitanPass.PasswordManager.Security.Repositories
             {
                 Id = entity.Id,
                 Email = entity.Email,
-                Salt = entity.Salt,
+                Salt = Convert.FromBase64String(entity.Salt),
                 HashedPassword = entity.HashedPassword,
                 CustomerId = entity.CustomerId
             };

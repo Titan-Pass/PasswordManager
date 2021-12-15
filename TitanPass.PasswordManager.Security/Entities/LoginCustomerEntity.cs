@@ -9,7 +9,7 @@ namespace TitanPass.PasswordManager.Security.Entities
         public int Id { get; set; }
         public string Email { get; set; }
         public string HashedPassword { get; set; }
-        public Byte[] Salt { get; set; }
+        public string Salt { get; set; }
         public int CustomerId { get; set; }
     }
 }
