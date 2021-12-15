@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Authentication;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -33,12 +34,19 @@ namespace TitanPass.PasswordManager.WebApi.Controllers
         [HttpPost(nameof(Login))]
         public ActionResult<TokenDto> Login(LoginDto dto)
         {
-            var token = _securityService.GenerateJwtToken(dto.Email, dto.Password);
-            return new TokenDto
+            try
             {
-                Jwt = token.Jwt,
-                Message = token.Message
-            };
+                var token = _securityService.GenerateJwtToken(dto.Email, dto.Password);
+                return new TokenDto
+                {
+                    Jwt = token.Jwt,
+                    Message = token.Message
+                };
+            }
+            catch (AuthenticationException ae)
+            {
+                return Unauthorized(ae.Message);
+            }
         }
 
         [AllowAnonymous]
