@@ -63,8 +63,6 @@ namespace TitanPass.PasswordManager.Security
                 HashedPassword = _securityService.HashPassword("123456", salt1)
             });
 
-            _ctx.SaveChanges();
-            
             var salt2 = _securityService.GenerateSalt();
 
             _ctx.LoginCustomers.Add(new LoginCustomerEntity
