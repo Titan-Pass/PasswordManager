@@ -126,9 +126,8 @@ namespace TitanPass.PasswordManager.WebApi
                 {
                     options
                         .UseLoggerFactory(loggerFactory)
-                        .EnableSensitiveDataLogging()
                         .UseSqlite("Data Source=auth.db");
-                });
+                }, ServiceLifetime.Transient);
 
             
             services.AddCors(options => options
@@ -164,6 +163,7 @@ namespace TitanPass.PasswordManager.WebApi
                 {
                     var services = scope.ServiceProvider;
                     var ctx = services.GetService<PasswordManagerDbContext>();
+                    ctx.Database.EnsureDeleted();
                     ctx.Database.EnsureCreated();
                 }
             }
