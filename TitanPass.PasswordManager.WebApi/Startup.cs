@@ -159,7 +159,7 @@ namespace TitanPass.PasswordManager.WebApi
             }
             else
             {
-                //securityDbContextSeeder.SeedDevelopment();
+                securityDbContextSeeder.SeedProduction();
                 using (var scope = app.ApplicationServices.CreateScope())
                 {
                     var services = scope.ServiceProvider;
