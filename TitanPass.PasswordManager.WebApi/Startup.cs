@@ -113,6 +113,7 @@ namespace TitanPass.PasswordManager.WebApi
                 }
             );
             
+            //Adding the contexts for our database
             services.AddDbContext<PasswordManagerDbContext>(
                 opt =>
                 {
