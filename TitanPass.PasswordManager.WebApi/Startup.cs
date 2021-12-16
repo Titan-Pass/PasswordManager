@@ -163,6 +163,8 @@ namespace TitanPass.PasswordManager.WebApi
                 {
                     var services = scope.ServiceProvider;
                     var ctx = services.GetService<PasswordManagerDbContext>();
+                    var securityCtx = services.GetService<SecurityDbContext>();
+                    securityCtx.Database.EnsureCreated();
                     ctx.Database.EnsureCreated();
                 }
             }
